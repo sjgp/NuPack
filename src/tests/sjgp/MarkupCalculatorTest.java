@@ -9,26 +9,82 @@ import org.junit.Test;
 import sjgp.MarkupCalculator;
 
 public class MarkupCalculatorTest {
-
+	
 	//
 	// tests for estimate()
+	// Assumes base markup = 5%; per person markup = 1.2%
 	//
 	@Test
-	public void estimate_Minimal() {
+	public void estimate_Minimal_DefaultNumberPeople() {
 		MarkupCalculator calc = new MarkupCalculator();
-		assertEquals(105.0d, calc.estimate(new BigDecimal(100.0d)).doubleValue(), 0.001);
+		BigDecimal estimate = calc.estimate(new BigDecimal(100.0d));
+		double expected = 100.0d + 5.0d + (105.0 * 1.2 / 100.0);
+		assertEquals(expected, estimate.doubleValue(), 0.001);
 	}
 	
 	@Test	// 100.75 + 5.0375
 	public void estimate_RoundUp() {
 		MarkupCalculator calc = new MarkupCalculator();
-		assertEquals(105.79d, calc.estimate(new BigDecimal(100.75d)).doubleValue(), 0.001);
+		BigDecimal estimate = calc.estimate(new BigDecimal(100.75d), 0);
+		double expected = 100.75d + 5.04d;
+		assertEquals(expected, estimate.doubleValue(), 0.001);
 	}
 	
 	@Test	// 100.25 + 5.0125
 	public void estimate_RoundDown() {
 		MarkupCalculator calc = new MarkupCalculator();
-		assertEquals(105.26d, calc.estimate(new BigDecimal(100.25d)).doubleValue(), 0.001);
+		BigDecimal estimate = calc.estimate(new BigDecimal(100.25d), 0);
+		double expected = 100.25d + 5.01d;
+		assertEquals(expected, estimate.doubleValue(), 0.001);
+	}
+	
+	@Test
+	public void estimate_WaivePeopleFee() {
+		int people = 0;
+		MarkupCalculator calc = new MarkupCalculator();
+		BigDecimal estimate = calc.estimate(new BigDecimal(100.0d), people); 
+		double expected = 100.0d + 5.0d;
+		assertEquals(expected, estimate.doubleValue(), 0.001);
+	}
+	
+	@Test
+	public void estimate_MultiplePeople() {
+		int people = 2;
+		MarkupCalculator calc = new MarkupCalculator();
+		BigDecimal estimate = calc.estimate(new BigDecimal(100.0d), people); 
+		double expected = 100.0d + 5.0d + (105.0 * 2.4 / 100.0);
+		assertEquals(expected, estimate.doubleValue(), 0.001);
+	}
+	
+	//
+	// Tests for calculatePersonsMarkup()
+	//
+	@Test	// 1 @ 1.2%
+	public void calculatePersonsMarkup_OnePerson() {
+		int numberPeople = 1;
+		MarkupCalculator calc = new MarkupCalculator();
+		assertEquals(1.2d, calc.calculatePersonsMarkup(new BigDecimal(100), numberPeople).doubleValue(), 0.001);
+	}
+	
+	@Test	// 3 @ 1.2%
+	public void calculatePersonsMarkup_ThreePeople() {
+		int numberPeople = 3;
+		MarkupCalculator calc = new MarkupCalculator();
+		assertEquals(3.6d, calc.calculatePersonsMarkup(new BigDecimal(100), numberPeople).doubleValue(), 0.001);
+	}
+	
+	@Test
+	public void calculatePersonsMarkup_NoPeople() {
+		int numberPeople = 0;
+		MarkupCalculator calc = new MarkupCalculator();
+		assertEquals(BigDecimal.ZERO, calc.calculatePersonsMarkup(new BigDecimal(100), numberPeople));
+	}
+	
+	@Test
+	public void calculatePersonsMarkup_NegativePeople_TreatAsZero() {
+		int numberPeople = -1;
+		MarkupCalculator calc = new MarkupCalculator();
+		assertEquals(BigDecimal.ZERO, calc.calculatePersonsMarkup(new BigDecimal(100), numberPeople));
 	}
 	
 	
