@@ -10,22 +10,23 @@ class TestSuite
 	end
 
 	def run_all
-		testnum = 0
+		testnum = -1
 		@results[testnum+=1] = calculateBaseMarkup_ExactDollarResult
 		@results[testnum+=1] = calculateBaseMarkup_ExactCents
 		@results[testnum+=1] = testSetBaseMarkup
-		@totalTests = testnum
+		@totalTests = testnum + 1
 		reportResults
 	end
 	
 	def reportResults
-		passes = 0
+		failed = 0
 		@results.each do |aresult|
-			if aresult
-				passes += 1 
+			puts aresult
+			if !aresult
+				failed += 1 
 			end
 		end
-		puts 'Total tests = ' + @totalTests.to_s + ', Passes = ' + passes.to_s + ', Fails = ' + (@totalTests - passes).to_s
+		puts 'Total tests = ' + @totalTests.to_s + ', Passes = ' + (@totalTests - failed).to_s + ', Fails = ' + failed.to_s
 	end
 	
 	def testSetBaseMarkup
