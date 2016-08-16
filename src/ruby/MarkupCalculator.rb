@@ -2,11 +2,10 @@ class MarkupCalculator
 
 	@@base = 0.05
 	@@perPerson = 0.012
-	@@defaultNumberPeople = 1
 	
-	def estimate(initialAmount)
+	def estimate(initialAmount, nbrPeople=1)
 		baseMarkupAmount = initialAmount + calculateBaseMarkup(initialAmount)
-		baseMarkupAmount + calculatePersonMarkup(baseMarkupAmount, @@defaultNumberPeople)
+		baseMarkupAmount + calculatePersonMarkup(baseMarkupAmount, nbrPeople)
 	end
 	
 	def calculateBaseMarkup(amount)
