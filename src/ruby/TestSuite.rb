@@ -20,6 +20,7 @@ class TestSuite
 		@results[testnum+=1] = ['calculatePersonMarkup_NegativePeople_TreatAsZero', calculatePersonMarkup_NegativePeople_TreatAsZero]
 		@results[testnum+=1] = ['calculatePersonMarkup_OnePerson', calculatePersonMarkup_OnePerson]
 		@results[testnum+=1] = ['calculatePersonMarkup_ThreePeople', calculatePersonMarkup_ThreePeople]
+		@results[testnum+=1] = ['testEstimate_DefaultNumberPeople', testEstimate_DefaultNumberPeople]
 		@totalTests = testnum + 1
 		reportResults
 	end
@@ -35,7 +36,10 @@ class TestSuite
 		puts 'Total tests = ' + @totalTests.to_s + ', Passes = ' + (@totalTests - failed).to_s + ', Fails = ' + failed.to_s
 	end
 
-	def testSetBaseMarkup
+	def testEstimate_DefaultNumberPeople
+		100 + 10 + (110 * 0.015) == @calculator.estimate(100)
+	end
+		def testSetBaseMarkup
 		0.1 == @calculator.getBaseMarkup
 	end
 	
